@@ -91,7 +91,7 @@ log "Launching ssh agent"
 eval "$(ssh-agent)"
 ssh-add "$HOME/.ssh/private_key"
 
-log "Adding known hosts"
+log "Adding known hosts \"$SSH_HOST\""
 printf '%s %s\n' "$SSH_HOST" "$SSH_HOST_PUBLIC_KEY" >> /etc/ssh/ssh_known_hosts
 if [ -n "$SSH_JUMP_HOST" ]; then
   printf '%s %s\n' "$SSH_JUMP_HOST" "$SSH_JUMP_PUBLIC_KEY" >> /etc/ssh/ssh_known_hosts
@@ -140,7 +140,7 @@ if [ -n "$SSH_JUMP_HOST" ]; then
   ssh_jump="-J $SSH_USER@$SSH_JUMP_HOST"
 fi
 
-echo ">> [local] Connecting to remote host."
+log "Connecting to remote host..."
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
   "$ssh_jump" "$SSH_USER@$SSH_HOST" -p "$SSH_PORT" \
   "$remote_command" \
