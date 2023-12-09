@@ -114,13 +114,14 @@ fi
 remote_command="set -e;
 log() { echo '>> [remote]' \$@ ; };
 
+$remote_cleanup
+
 log 'Creating workspace directory...';
 mkdir -p \"$remote_path\";
 
 log 'Unpacking workspace...';
 tar -C \"$remote_path\" -xjv;
 
-$remote_cleanup
 $remote_registry_login
 
 log 'Launching docker compose... \"$remote_docker_exec\"';
