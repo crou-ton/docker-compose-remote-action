@@ -101,14 +101,16 @@ remote_path="\$HOME/$WORKSPACE"
 remote_cleanup=""
 remote_registry_login=""
 remote_docker_exec="docker compose -f \"$DOCKER_COMPOSE_FILENAME\" up $DOCKER_ARGS"
+
 if [ -n "$DOCKER_COMPOSE_PREFIX" ]; then
   remote_docker_exec="docker compose -f \"$DOCKER_COMPOSE_FILENAME\" -p \"$DOCKER_COMPOSE_PREFIX\" up $DOCKER_ARGS"
 fi
-fi
+
 if $DOCKER_USE_STACK ; then
   remote_path="\$HOME/$WORKSPACE/$DOCKER_COMPOSE_PREFIX"
   remote_docker_exec="docker stack deploy -c \"$DOCKER_COMPOSE_FILENAME\" --prune \"$DOCKER_COMPOSE_PREFIX\" $DOCKER_ARGS"
 fi
+
 if ! $WORKSPACE_KEEP ; then
   remote_cleanup="cleanup() { log 'Removing workspace'; rm -rf \"$remote_path\"; }; trap cleanup EXIT;"
 fi
