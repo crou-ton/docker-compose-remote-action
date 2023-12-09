@@ -3,12 +3,12 @@ set -eu
 
 # check if required parameters provided
 if [ -z "$SSH_USER" ]; then
-    echo "Input ssh_host is required!"
+    echo "Input ssh_user is required!"
     exit 1
 fi
 
 if [ -z "$SSH_HOST" ]; then
-    echo "Input ssh_user is required!"
+    echo "Input ssh_host is required!"
     exit 1
 fi
 
@@ -16,11 +16,11 @@ if [ -z "$SSH_PORT" ]; then
   SSH_PORT=22
 fi
 
-if [ -z "$SSH_JUMP_HOST" ]; then
-    if [ -z "$SSH_JUMP_PUBLIC_KEY" ]; then
-        echo "Input ssh_jump_public_key is required!"
-        exit 1
-    fi
+if [ -n "$SSH_JUMP_HOST" ]; then
+  if [ -z "$SSH_JUMP_PUBLIC_KEY" ]; then
+    echo "Input ssh_jump_public_key is required!"
+    exit 1
+  fi
 fi
 
 if [ -z "$SSH_PRIVATE_KEY" ]; then
@@ -103,6 +103,7 @@ remote_registry_login=""
 remote_docker_exec="docker compose -f \"$DOCKER_COMPOSE_FILENAME\" up $DOCKER_ARGS"
 if [ -n "$DOCKER_COMPOSE_PREFIX" ]; then
   remote_docker_exec="docker compose -f \"$DOCKER_COMPOSE_FILENAME\" -p \"$DOCKER_COMPOSE_PREFIX\" up $DOCKER_ARGS"
+fi
 fi
 if $DOCKER_USE_STACK ; then
   remote_path="\$HOME/$WORKSPACE/$DOCKER_COMPOSE_PREFIX"
