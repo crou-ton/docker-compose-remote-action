@@ -33,7 +33,6 @@ inputs:
     default: "-d --remove-orphans --build"
   docker_use_stack:
     description: Use docker stack instead of docker compose ("true" or "false").
-    default: "false"
   docker_env:
     description: Docker Environment variables.
   workspace:
