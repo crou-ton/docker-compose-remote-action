@@ -16,13 +16,6 @@ if [ -z "$SSH_PORT" ]; then
   SSH_PORT=22
 fi
 
-if [ -n "$SSH_JUMP_HOST" ]; then
-  if [ -z "$SSH_JUMP_PUBLIC_KEY" ]; then
-    echo "Input ssh_jump_public_key is required!"
-    exit 1
-  fi
-fi
-
 if [ -z "$SSH_PRIVATE_KEY" ]; then
     echo "Input ssh_private_key is required!"
     exit 1
@@ -72,30 +65,29 @@ log() {
 
 cleanup() {
   set +e
-  log "Killing ssh agent"
+
+  log "Killing ssh agent..."
   ssh-agent -k
-  log "Removing workspace archive"
+
+  log "Removing workspace archive..."
   rm -f /tmp/workspace.tar.bz2
 }
 trap cleanup EXIT
 
-log "Packing workspace into archive to transfer onto remote machine"
+log "Packing workspace into archive to transfer onto remote machine..."
 tar cjvf /tmp/workspace.tar.bz2 --exclude .git .
 
-log "Registering SSH keys"
+log "Registering SSH keys..."
 mkdir -p "$HOME/.ssh"
 printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/.ssh/private_key"
 chmod 600 "$HOME/.ssh/private_key"
 
-log "Launching ssh agent"
+log "Launching ssh agent..."
 eval "$(ssh-agent)"
 ssh-add "$HOME/.ssh/private_key"
 
-log "Adding known hosts \"$SSH_HOST\""
+log "Adding known hosts..."
 printf '%s %s\n' "$SSH_HOST" "$SSH_HOST_PUBLIC_KEY" >> /etc/ssh/ssh_known_hosts
-if [ -n "$SSH_JUMP_HOST" ]; then
-  printf '%s %s\n' "$SSH_JUMP_HOST" "$SSH_JUMP_PUBLIC_KEY" >> /etc/ssh/ssh_known_hosts
-fi
 
 remote_path="\$HOME/$WORKSPACE"
 remote_cleanup=""
@@ -135,13 +127,8 @@ log 'Launching docker compose... \"$remote_docker_exec\"';
 cd \"$remote_path\";
 $DOCKER_ENV $remote_docker_exec"
 
-ssh_jump=""
-if [ -n "$SSH_JUMP_HOST" ]; then
-  ssh_jump="-J $SSH_USER@$SSH_JUMP_HOST"
-fi
-
 log "Connecting to remote host..."
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-  "$ssh_jump" "$SSH_USER@$SSH_HOST" -p "$SSH_PORT" \
+  "$SSH_USER@$SSH_HOST" -p "$SSH_PORT" \
   "$remote_command" \
   < /tmp/workspace.tar.bz2

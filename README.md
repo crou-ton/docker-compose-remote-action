@@ -13,8 +13,6 @@ Logs into remote host via ssh. Unpacks the workspace there and runs `docker comp
 
 ### Optional
 * `ssh_port` - Remote port for SSH connection. Default is `22`.
-* `ssh_jump_host` - Jump host name. If set, `ssh_jump_public_key` is required.
-* `ssh_jump_public_key` - Jump host SSH public key (The content of `~/.ssh/known_hosts` needs to be given here).
 * `docker_compose_prefix` - Project name passed to compose. Each docker container will have this prefix in name. Required if `docker_use_stack` is `true`.
 * `docker_compose_filename` - Path to the docker-compose file in the repository. Default is `docker-compose.yml`.
 * `docker_args` - Docker compose arguments. Default is `-d --remove-orphans --build`.

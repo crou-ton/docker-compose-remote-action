@@ -13,16 +13,12 @@ inputs:
   ssh_user:
     description: Remote user name.
     required: true
-  ssh_jump_host:
-    description: Jump host name.
   ssh_private_key:
     description: Private SSH key used for logging into remote system.
     required: true
   ssh_host_public_key:
     description: Remote host SSH public key (The content of `~/.ssh/known_hosts` needs to be given here).
     required: true
-  ssh_jump_public_key:
-    description: Jump host SSH public key (The content of `~/.ssh/known_hosts` needs to be given here).
   docker_compose_filename:
     description: Docker compose file to use.
     default: docker-compose.yml
@@ -54,10 +50,8 @@ runs:
     SSH_USER: ${{ inputs.ssh_user }}
     SSH_HOST: ${{ inputs.ssh_host }}
     SSH_PORT: ${{ inputs.ssh_port }}
-    SSH_JUMP_HOST: ${{ inputs.ssh_jump_host }}
     SSH_PRIVATE_KEY: ${{ inputs.ssh_private_key }}
     SSH_HOST_PUBLIC_KEY: ${{ inputs.ssh_host_public_key }}
-    SSH_JUMP_PUBLIC_KEY: ${{ inputs.ssh_jump_public_key }}
     DOCKER_COMPOSE_FILENAME: ${{ inputs.docker_compose_filename }}
     DOCKER_COMPOSE_PREFIX: ${{ inputs.docker_compose_prefix }}
     DOCKER_ARGS: ${{ inputs.docker_args }}
